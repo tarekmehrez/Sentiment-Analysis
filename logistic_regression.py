@@ -1,46 +1,62 @@
 import numpy as np
-import scipy.optimize as opt
-import sys
-
-def sigmoid(X):
-	return 1 / (1 + np.exp(-X))
+import logging
 
 
 
-def cost(theta, X,y):
-	hyp = sigmoid(np.dot(X, theta))
+class LogisticRegression(object):
 
-	cost = -y * np.log(hyp) - (1 - y) * np.log(1-hyp)
-	return cost.mean()
+	def __init__(self,X, y,iterations,alpha,percentage):
+		training = int(X.shape[0] * percentage)
+		self.X_train = X[0:training,:]
+		self.X_test = X[training:,:]
+
+		self.y_train = y[0:training]
+		self.y_test = y[training:]
+
+		self.iterations = iterations
+		self.alpha = alpha
+		self.theta = 0.1*np.random.randn(X.shape[1])
+
+		logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s')
+		self.logger = logging.getLogger(__name__)
+
+	#  sigmoid function
+
+	def sigmoid(self,X):
+		return 1 / (1 + np.exp(-X))
+
+	# cost function
+
+	def cost(self,theta, X,y):
+		hyp = self.sigmoid(np.dot(X, theta))
+
+		cost = -y * np.log(hyp) - (1 - y) * np.log(1-hyp)
+		return cost.mean()
 
 
-def grad(theta, X, y):
-    hyp = sigmoid(np.dot(X, theta))
-    error = hyp - y 
-    grad = np.dot(error, X) / y.size
+	# gradient descent
 
-    return grad
+	def grad(self,theta, X, y, alpha, iterations):
 
-print "reading vectors"
-with open("vectors-bag-of-words.csv") as file:
-	file_content = np.array([line.strip().decode('utf-8').split(',') for line in file])
+		for i in range(iterations):
+			hyp = self.sigmoid(np.dot(X, theta))
+			error = hyp - y
+			calculated_cost = self.cost(theta, X,y)
 
-y = file_content[:,0] 
-X = file_content[:,1:]
+			if(calculated_cost == 0):
+				return theta
 
-y = (y == 'positive') * 1
-X = np.append( np.ones((X.shape[0], 1)), X, axis=1)
+			theta = theta - alpha * np.dot(error,X)
 
-theta = 0.1*np.random.randn(X.shape[1])
+			self.logger.debug("Iteration: " + str(i) + ", Cost: " + str(calculated_cost))
 
+		return theta
 
-X=np.array(X,dtype=float)
-y=np.array(y,dtype=float)
-theta=np.array(theta,dtype=float)
+	def train(self):
+		self.logger.info("Starting Logistic Regression")
+		self.logger.debug("Number of training instances: " + self.X_train.shape[0])
+		self.logger.debug("Number of testing instances: " + self.X_test.shape[0])
+		theta = self.grad(self.theta, self.X_train, self.y_train, self.alpha, self.iterations)
+		hyp = self.sigmoid(np.dot(self.X_test, self.theta))
 
-print "running logistic regression"
-theta = opt.fmin_bfgs(cost, theta, fprime=grad, args=(X, y))
-
-predictions = sigmoid(np.dot(X,theta))
-
-print np.sum((predictions == y) * 1) / y.shape[0] * 100
+		self.logger.debug("Done Training with Accuracy: "+str(((((hyp >= 0.5) * 1) == self.y_test) * 1).mean()))
