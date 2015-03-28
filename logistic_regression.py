@@ -39,17 +39,19 @@ class LogisticRegression(object):
 		for i in range(self.iterations):
 			hyp = self.sigmoid(np.dot(X, theta))
 			error = hyp - y
-			calculated_cost = self.cost(theta, X,y)
-			if(calculated_cost == 0):
+			current_cost = self.cost(theta, X,y)
+
+			if(current_cost == 0):
+				self.logger.info("Cost reached 0")
 				return theta
 
+			theta_0 = theta[0]
+			theta = theta - (self.alpha * (np.dot(error,X) + ((self.reg / X.shape[0]) * theta)))
 			if self.reg > 0:
-				theta[0] = theta[0] - (self.alpha * np.dot(error,X[:,0]))
-				theta[1:] = theta[1:] - (self.alpha * (np.dot(error,X[:,1:]) + ((self.reg / X.shape[0]) * theta[1:])))
-			else:
-				theta = theta - self.alpha * np.dot(error,X)
+				theta[0] = theta_0
+				
 
-			self.logger.debug("Iteration: " + str(i) + ", Cost: " + str(calculated_cost))
+			self.logger.debug("Iteration: " + str(i) + ", Cost: " + str(current_cost))
 
 		return theta
 
