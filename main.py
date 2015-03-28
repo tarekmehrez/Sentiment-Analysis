@@ -11,8 +11,8 @@ def help_exit():
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--file', action='store', dest='file',
-                    help='Input training file (csv or tsv) with class at the beginning')
+parser.add_argument('--file', action='store', dest='file', default='corpus/movie-reviews-sentiment.tsv',
+                    help='Input training file (csv or tsv) with class at the beginning [default=corpus/movie-reviews-sentiment.tsv]')
 
 parser.add_argument('--train', action='store', dest='train',type=int,default=0,choices=[0, 1],
                     help='Training algorithm: 0 for logistic regression & 1 for RNTN [default=0]')

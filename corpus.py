@@ -86,7 +86,7 @@ class Corpus(object):
 
 		with open(self.file_path) as file:
 			if(self.file_path.split('.')[1] == "csv"):
-				file_content = np.array([line.strip().decode('utf-8').split(',') for line in file])
+				file_content = np.array([line.strip().decode('utf-8').split(',',1) for line in file])
 			elif (self.file_path.split('.')[1] == "tsv"):
 				file_content = np.array([line.strip().decode('utf-8').split('\t') for line in file])
 
