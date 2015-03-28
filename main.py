@@ -20,8 +20,8 @@ parser.add_argument('--train', action='store', dest='train',type=int,default=0,c
 parser.add_argument('--iter', action='store', dest='iter',type=int,default=1000,
                     help='Number of iterations [default=1000]')
 
-parser.add_argument('--alpha', action='store', dest='alpha',type=float ,default=0.001,
-                    help='Learning rate [default=0.0005]')
+parser.add_argument('--alpha', action='store', dest='alpha',type=float ,default=0.005,
+                    help='Learning rate [default=0.005]')
 
 parser.add_argument('--perc', action='store', dest='perc',type=float ,default=0.9,
                     help='Percentage split for training & testing data [default=0.8]')
