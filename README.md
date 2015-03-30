@@ -1,5 +1,5 @@
 # Sentiment-Analysis
-Implementation of logistic regression and RNTN to perform sentiment analysis
+Implementation of logistic regressio to perform sentiment analysis
 
 The tool takes in csv/tsv annotated text files with 2 (+ve,-ve) classes at the beginning of each instance,
 then it outputs the classification accuracy based on the parameters entered by the user
